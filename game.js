@@ -1,27 +1,9 @@
-//PSEUDOCODE
-
-// generate the computer's choice
-
-// ask the user for their choice and store the choice
-// make this case sensitive
-
-// playRound
-// compare the user's choice with the computer's
-// return the winner
-
-// playGame
-// repeat the playRound function 5 times
-// print who won the rounds
-// return who won the game
-
-// 0 == rock
-// 1 == paper
-// 2 == scissors
-
+// Generates a random choice for the computer: "rock", "paper", or "scissors"
 function getComputerChoice() 
 {
     let pick = Math.floor(Math.random() * 3);
 
+    // Convert the random number to a corresponding choice
     if (pick==0)
         return "rock";
     else if (pick==1) 
@@ -29,104 +11,139 @@ function getComputerChoice()
     else return "scissors";
 }
 
-function getPlayerChoice() 
+// Compares the computer's choice with the player's choice and determines the winner
+function playRound(playerChoice) 
 {
-    let choice = prompt("Rock Paper or Scissors?").toLowerCase();
-    return choice;
-}
-
-function playRound (playerChoice,computerChoice) 
-{
+    let computerChoice = getComputerChoice();
     if (playerChoice == "rock")
     {
+        // Determine the winner based on player and computer choices
         if (computerChoice == "paper")
         {
-            return "computer";
+            return "COMPUTER";
         }
         else if (computerChoice == "rock")
         {
-            return "tie";
+            return "TIE";
         } 
         else if (computerChoice == "scissors") 
         {
-            return "player";
+            return "PLAYER";
         }
     }
     else if (playerChoice == "paper")
     {
         if (computerChoice == "paper")
         {
-            return "tie";
+            return "TIE";
         }
         else if (computerChoice == "scissors")
         {
-            return "computer"
+            return "COMPUTER"
         } 
         else if (computerChoice == "rock") 
         {
-            return "player";
+            return "PLAYER";
         }
     }
     else if (playerChoice == "scissors")
     {
         if (computerChoice == "paper")
         {
-            return "player";
+            return "PLAYER";
         }
         else if (computerChoice == "scissors")
         {
-            return "tie"
+            return "TIE"
         } 
         else if (computerChoice == "rock") 
         {
-            return "computer";
+            return "COMPUTER";
         }
     }
 }
 
-function playGame() 
+// Variables used to count points and ties, and to reference elements on the web page
+let computerScore = 0;
+let playerScore = 0;
+let ties = 0;
+let playerScoreDisplayed = document.querySelector(".playerPoints");
+let computerScoreDisplayed = document.querySelector(".computerPoints");
+
+let winnerOfRoundDisplayed = document.querySelector(".winnerWas");
+let playerChoiceDisplayed = document.querySelector(".playerChoice");
+let computerChoiceDisplayed = document.querySelector(".computerChoice");
+
+// Updates the scores based on the winner of the round
+function updateScore(winnerOfRound) 
 {
-    let computerScore = 0;
-    let playerScore = 0;
-    let ties = 0;
-    for(i=0;i<5;i++)
-    {   
-        let playerChoice = getPlayerChoice();
-        let computerChoice = getComputerChoice();
-
-        console.log("playerChoice: " + playerChoice + "\n" + "computerChoice: " + computerChoice);
-
-        let winnerOfRound = playRound(playerChoice,computerChoice);
-
-        if(winnerOfRound == "computer")
-        {
-            console.log("COMPUTER WON ROUND " + (i+1) + "!");
-            computerScore+= 1;
-        }
-        else if (winnerOfRound == "player")
-        {
-            console.log("PLAYER WON ROUND " + (i+1) + "!");
-            playerScore+= 1;
-        }
-        else 
-        {
-            console.log("ROUND " + (i+1) + " WAS A TIE!");
-        }
-    }
-    if (computerScore>playerScore)
+    // Increment the appropriate score or tie count
+    if(winnerOfRound == "COMPUTER")
     {
-        return "Computer Won!"
+        return computerScore++;
     }
-    else if (computerScore<playerScore)
+    else if (winnerOfRound == "PLAYER")
     {
-        return "You Won!"
+        return playerScore++;
     }
-    else return "It was a tie!"
+    else 
+    {
+        return ties++;
+    }
 }
 
-console.log("Results: " + playGame());
+// Updates and displays the scores on the webpage
+function updateDisplayedScores() {
+    playerScoreDisplayed.textContent = "Player Score: " + playerScore;
+    computerScoreDisplayed.textContent = "Computer Score: " + computerScore;
+}
 
+// Handles player choice selection and initiates a round of the game
+const playerChoiceRock = document.querySelector("#rock");
+playerChoiceRock.addEventListener('click', () => {
+    // Play a round with the player choosing "rock"
+    let winnerOfRound = playRound("rock");
+    playGame(winnerOfRound);
+});
+const playerChoicePaper = document.querySelector("#paper");
+playerChoicePaper.addEventListener('click', () => {
+    // Play a round with the player choosing "paper"
+    let winnerOfRound = playRound("paper");
+    playGame(winnerOfRound);
+});
+const playerChoiceScissors = document.querySelector("#scissors");
+playerChoiceScissors.addEventListener('click', () => {
+    // Play a round with the player choosing "scissors"
+    let winnerOfRound = playRound("scissors");
+    playGame(winnerOfRound);
+});
 
+updateDisplayedScores();
 
+// Initiates a round of the game and updates scores and display
+function playGame(winnerOfRound)
+{
+    // Update scores and display
+    updateScore(winnerOfRound);
+    updateDisplayedScores();
 
+    // Check if a player reached 5 points and declare winner
+    if (computerScore == 5)
+    {
+        computerScore = 0;
+        playerScore = 0;
+        ties = 0;
+        updateDisplayedScores();
+        winnerOfRoundDisplayed.textContent = winnerOfRound + " WON!";
+    }
+    else if (playerScore == 5)
+    {
+        computerScore = 0;
+        playerScore = 0;
+        ties = 0;
+        updateDisplayedScores();
 
+        // Display the winner of the game
+        winnerOfRoundDisplayed.textContent = winnerOfRound + " WON!";
+    }
+}
