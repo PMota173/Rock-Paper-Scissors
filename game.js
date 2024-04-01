@@ -1,23 +1,3 @@
-//PSEUDOCODE
-
-// generate the computer's choice
-
-// ask the user for their choice and store the choice
-// make this case sensitive
-
-// playRound
-// compare the user's choice with the computer's
-// return the winner
-
-// playGame
-// repeat the playRound function 5 times
-// print who won the rounds
-// return who won the game
-
-// 0 == rock
-// 1 == paper
-// 2 == scissors
-
 function getComputerChoice() 
 {
     let pick = Math.floor(Math.random() * 3);
@@ -29,104 +9,124 @@ function getComputerChoice()
     else return "scissors";
 }
 
-function getPlayerChoice() 
+function playRound(playerChoice) 
 {
-    let choice = prompt("Rock Paper or Scissors?").toLowerCase();
-    return choice;
-}
-
-function playRound (playerChoice,computerChoice) 
-{
+    let computerChoice = getComputerChoice();
     if (playerChoice == "rock")
     {
         if (computerChoice == "paper")
         {
-            return "computer";
+            return "COMPUTER";
         }
         else if (computerChoice == "rock")
         {
-            return "tie";
+            return "TIE";
         } 
         else if (computerChoice == "scissors") 
         {
-            return "player";
+            return "PLAYER";
         }
     }
     else if (playerChoice == "paper")
     {
         if (computerChoice == "paper")
         {
-            return "tie";
+            return "TIE";
         }
         else if (computerChoice == "scissors")
         {
-            return "computer"
+            return "COMPUTER"
         } 
         else if (computerChoice == "rock") 
         {
-            return "player";
+            return "PLAYER";
         }
     }
     else if (playerChoice == "scissors")
     {
         if (computerChoice == "paper")
         {
-            return "player";
+            return "PLAYER";
         }
         else if (computerChoice == "scissors")
         {
-            return "tie"
+            return "TIE"
         } 
         else if (computerChoice == "rock") 
         {
-            return "computer";
+            return "COMPUTER";
         }
     }
 }
 
-function playGame() 
+let computerScore = 0;
+let playerScore = 0;
+let ties = 0;
+let playerScoreDisplayed = document.querySelector(".playerPoints");
+let computerScoreDisplayed = document.querySelector(".computerPoints");
+
+let winnerOfRoundDisplayed = document.querySelector(".winnerWas");
+let playerChoiceDisplayed = document.querySelector(".playerChoice");
+let computerChoiceDisplayed = document.querySelector(".computerChoice");
+
+function updateScore(winnerOfRound) 
 {
-    let computerScore = 0;
-    let playerScore = 0;
-    let ties = 0;
-    for(i=0;i<5;i++)
-    {   
-        let playerChoice = getPlayerChoice();
-        let computerChoice = getComputerChoice();
-
-        console.log("playerChoice: " + playerChoice + "\n" + "computerChoice: " + computerChoice);
-
-        let winnerOfRound = playRound(playerChoice,computerChoice);
-
-        if(winnerOfRound == "computer")
-        {
-            console.log("COMPUTER WON ROUND " + (i+1) + "!");
-            computerScore+= 1;
-        }
-        else if (winnerOfRound == "player")
-        {
-            console.log("PLAYER WON ROUND " + (i+1) + "!");
-            playerScore+= 1;
-        }
-        else 
-        {
-            console.log("ROUND " + (i+1) + " WAS A TIE!");
-        }
-    }
-    if (computerScore>playerScore)
+    if(winnerOfRound == "COMPUTER")
     {
-        return "Computer Won!"
+        return computerScore++;
     }
-    else if (computerScore<playerScore)
+    else if (winnerOfRound == "PLAYER")
     {
-        return "You Won!"
+        return playerScore++;
     }
-    else return "It was a tie!"
+    else 
+    {
+        return ties++;
+    }
+}
+function updateScores() {
+    playerScoreDisplayed.textContent = playerScore;
+    computerScoreDisplayed.textContent = computerScore;
 }
 
-console.log("Results: " + playGame());
+const playerChoiceRock = document.querySelector("#rock");
+playerChoiceRock.addEventListener('click', () => {
+    let winnerOfRound = playRound("rock");
+    playGame(winnerOfRound);
+});
 
+const playerChoicePaper = document.querySelector("#paper");
+playerChoicePaper.addEventListener('click', () => {
+    let winnerOfRound = playRound("paper");
+    playGame(winnerOfRound);
+});
 
+const playerChoiceScissors = document.querySelector("#scissors");
+playerChoiceScissors.addEventListener('click', () => {
+    let winnerOfRound = playRound("scissors");
+    playGame(winnerOfRound);
+});
 
+updateScores();
 
-
+function playGame(winnerOfRound)
+{
+    updateScore(winnerOfRound);
+    updateScores();
+    if (computerScore == 5)
+    {
+        computerScore = 0;
+        playerScore = 0;
+        ties = 0;
+        updateScores();
+        winnerOfRoundDisplayed.textContent = winnerOfRound;
+    }
+    else if (playerScore == 5)
+    {
+        computerScore = 0;
+        playerScore = 0;
+        ties = 0;
+        updateScores();
+        winnerOfRoundDisplayed.textContent = winnerOfRound;
+    }
+}
